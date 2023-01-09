@@ -8,9 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
-public class DataBase extends SQLiteOpenHelper {
+public class Database extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION=2;
     public static final String DATABASE_NAME = "app-meteo";
     private static final String PKEY = "pkey";
@@ -22,7 +20,7 @@ public class DataBase extends SQLiteOpenHelper {
 
     private static final String ORIGINAL_CITIES="insert into " + TABLE_NAME + " (" + CITY_NAME + ") VALUES('null')";
 
-    public DataBase(Context context){
+    public Database(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
