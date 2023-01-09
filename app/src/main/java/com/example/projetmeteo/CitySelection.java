@@ -42,6 +42,7 @@ public class CitySelection extends AppCompatActivity {
                     Log.i("APP", cityInput.getText().toString());
                     database.insertCity(cityInput.getText().toString());
                     readCities();
+                    cityInput.setText("");
                     return true;
                 }
                 return false;
