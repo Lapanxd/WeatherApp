@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -15,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -30,8 +30,14 @@ public class CitySelection extends AppCompatActivity {
         setContentView(R.layout.activity_city_selection);
 
         EditText cityInput = findViewById(R.id.cityInput);
+        Button backButton = findViewById(R.id.backButton);
 
         readCities();
+
+        backButton.setOnClickListener(View->{
+            Intent myIntent = new Intent(this, MainActivity.class);
+            startActivity(myIntent);
+        });
 
         cityInput.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -51,11 +57,11 @@ public class CitySelection extends AppCompatActivity {
     }
 
     public class TextButton {
-        public String getTexte() {
+        public String getText() {
             return texte;
         }
 
-        public void setTexte(String texte) {
+        public void setText(String texte) {
             this.texte = texte;
         }
 
@@ -79,14 +85,14 @@ public class CitySelection extends AppCompatActivity {
             TextButton textButton = getItem(position);
 
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.text_field, parent, false);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.city_item, parent, false);
             }
             TextView cityName = convertView.findViewById(R.id.cityName);
             Button remove = convertView.findViewById(R.id.remove);
 
-            cityName.setText(textButton.getTexte());
+            cityName.setText(textButton.getText());
             remove.setOnClickListener(View->{
-                database.removeCity(textButton.getTexte());
+                database.removeCity(textButton.getText());
                 readCities();
             });
 
@@ -99,7 +105,7 @@ public class CitySelection extends AppCompatActivity {
         ArrayList<TextButton> tableau = new ArrayList();
         for (int i=0; i<database.readData(); i++) {
             TextButton textButton = new TextButton();
-            textButton.setTexte(database.getCities()[i]);
+            textButton.setText(database.getCities()[i]);
             tableau.add(textButton);
         }
         CustomAdapter adapter = new CustomAdapter(this, tableau);

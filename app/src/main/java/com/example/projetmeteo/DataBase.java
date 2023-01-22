@@ -71,17 +71,13 @@ public class Database extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public String[] getCities(){
         String response[] = new String[5];
-
-        //Log.i("APP", "Reading values in database...");
         String select = new String("SELECT " + CITY_NAME + " from " + TABLE_NAME);
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(select, null);
-        Log.i("APP", "Number of entries: " + cursor.getCount());
         if (cursor.moveToFirst()) {
             int i=0;
             do {
                 response[i] = cursor.getString(0);
-                Log.i("APP", cursor.getString(0));
                 i++;
             } while (cursor.moveToNext());
         }
