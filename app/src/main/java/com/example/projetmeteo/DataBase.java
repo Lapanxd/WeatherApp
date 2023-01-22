@@ -8,9 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
-public class DataBase extends SQLiteOpenHelper {
+public class Database extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION=2;
     public static final String DATABASE_NAME = "app-meteo";
     private static final String PKEY = "pkey";
@@ -22,7 +20,7 @@ public class DataBase extends SQLiteOpenHelper {
 
     private static final String ORIGINAL_CITIES="insert into " + TABLE_NAME + " (" + CITY_NAME + ") VALUES('null')";
 
-    public DataBase(Context context){
+    public Database(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -73,17 +71,13 @@ public class DataBase extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public String[] getCities(){
         String response[] = new String[5];
-
-        //Log.i("APP", "Reading values in database...");
         String select = new String("SELECT " + CITY_NAME + " from " + TABLE_NAME);
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(select, null);
-        Log.i("APP", "Number of entries: " + cursor.getCount());
         if (cursor.moveToFirst()) {
             int i=0;
             do {
                 response[i] = cursor.getString(0);
-                Log.i("APP", cursor.getString(0));
                 i++;
             } while (cursor.moveToNext());
         }

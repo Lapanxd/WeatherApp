@@ -1,49 +1,78 @@
 package com.example.projetmeteo;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
-
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.projetmeteo.ui.main.SectionsPagerAdapter;
-import com.example.projetmeteo.databinding.ActivityMainBinding;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
-
-    private ActivityMainBinding binding;
-
-    DataBase dataBase = new DataBase(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        Button selection_ville = findViewById(R.id.selection_ville);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        ViewPager2 viewPager = findViewById(R.id.pager);
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-        ViewPager viewPager = binding.viewPager;
-        viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = binding.tabs;
-        tabs.setupWithViewPager(viewPager);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        Database database = new Database(this);
 
-        TextView textView = findViewById(R.id.textView);
-        Button button = findViewById(R.id.button3);
+        Adapter adapter = new Adapter(this, getSupportFragmentManager(), getLifecycle());
 
-        button.setOnClickListener(View -> {
-            //textView.setText(dataBase.getCities()[0] + dataBase.getCities()[1] + dataBase.getCities()[2] + dataBase.getCities()[3] + dataBase.getCities()[4]);
-            openCitySelectionActivity();
+        String[] cities = database.getCities();
+
+        viewPager.setAdapter(adapter);
+
+
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            tab.setText(cities[(position)]);
+        }).attach();
+
+        selection_ville.setOnClickListener(View->{
+            Intent myIntent = new Intent(this, CitySelection.class);
+            startActivity(myIntent);
         });
     }
 
-    public void openCitySelectionActivity(){
-        Intent myIntent = new Intent(this, city_selection.class);
-        startActivity(myIntent);
+    @Override
+    public void onBackPressed (){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage("Voulez vous quitter ?")
+                .setTitle("Attention !")
+                .setPositiveButton("Continuer", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        MainActivity.this.finish();
+                        dialog.dismiss();
+                    }
+
+                }).setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 }
